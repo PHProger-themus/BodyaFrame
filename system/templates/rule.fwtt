@@ -1,11 +1,13 @@
 <?php
 
-namespace app\user\rules;
+namespace app\user\rules*NAMESPACE*;
 
 class *NAME*
 {
 
     public function apply() {
+
+        // Your rule here
 
     }
 

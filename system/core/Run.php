@@ -77,44 +77,52 @@ class Run
     {
         $type = $params[0];
         $brief_name = $params[1];
+        $types = require_once(SYSTEM_DIR . '/config/templates.php');
 
         $file = dirname(__DIR__) . '\\templates\\' . $type . '.fwtt';
-        if (!file_exists($file)) {
-            echo "Сущность для создания не определена";
+        if (!array_key_exists($type, $types)) {
+            echo "Неизвестная сущность";
         } else {
+            $folder = $types[$type];
+            $name = explode('/', $brief_name);
+            $name = $name[count($name) - 1];
+
             switch ($type) {
                 case 'controller';
-                case 'cmdController' :
+                case 'consoleController' :
                     {
-                        $name = ucfirst($brief_name) . 'Controller';
+                        $name = preg_replace_callback('/([a-z]+)$/', function($matches) {
+                            return ucfirst($matches[1]) . 'Controller';
+                        }, $brief_name);
                     };
                     break;
                 case 'contentController';
                 case 'model';
-                case 'cmdModel' :
+                case 'consoleModel';
+                case 'content' :
                     {
-                        $name = ucfirst($brief_name);
+                        $name = preg_replace_callback('/([a-z]+)$/', function($matches) {
+                            return ucfirst($matches[1]);
+                        }, $brief_name);
                     };
                     break;
                 case 'view';
                 case 'lang';
-                case 'content' :
                     {
                         $name = $brief_name;
                     };
                     break;
                 case 'rule' :
                     {
-                        $name = ucfirst($brief_name) . 'Rule';
+                        $name = preg_replace_callback('/([a-z]+)$/', function($matches) {
+                            return ucfirst($matches[1]) . 'Rule';
+                        }, $brief_name);
                     };
                     break;
             }
-            $method = $type . 'Exists';
-            if ($newfile = $this->$method($name)) {
-                copy($file, $newfile);
-                $file_contents = file_get_contents($newfile);
-                $file_contents = str_replace('*NAME*', $name, $file_contents);
-                file_put_contents($newfile, $file_contents);
+
+            if ($new_file = $this->checkForFile($folder, $name)) {
+                $this->createFile($file, $new_file, $name, $folder);
                 echo "Файл создан";
             } else {
                 echo "Файл " . $name . " уже существует";
@@ -122,42 +130,35 @@ class Run
         }
     }
 
-    private function checkForFile($dir, $name) {
-        $file = $dir . '\\' . $name . '.php';
+    private function createFile($file, $new_file, $name, $folder)
+    {
+        $path = pathinfo($name);
+        if (!file_exists($path['dirname'])) {
+            mkdir($folder . '/' . $path['dirname'], 0777, true);
+        }
+        copy($file, $new_file);
+
+        $file_contents = file_get_contents($new_file);
+        if (!empty($file_contents)) {
+            $file_name = explode('/', $name);
+            $file_name = $file_name[count($file_name) - 1];
+            $namespace = str_replace('/', '\\', substr($name, 0, -1 * (strlen($file_name) + 1)));
+
+            $file_contents = str_replace('*NAME*', $file_name, $file_contents);
+            $file_contents = str_replace('*NAMESPACE*', (!empty($namespace) ? '\\' : '') . $namespace, $file_contents);
+        }
+
+        file_put_contents($new_file, $file_contents);
+    }
+
+    private function checkForFile($path, $name)
+    {
+        $name = str_replace('/', '\\', $name);
+        $file = $path . '\\' . $name . '.php';
         if (!file_exists($file)) {
             return $file;
         }
         return false;
-    }
-
-    private function controllerExists($name)
-    {
-        return $this->checkForFile(APP_DIR . '\\controllers', $name);
-    }
-
-    private function cmdControllerExists($name)
-    {
-        return $this->checkForFile(HOME_DIR . '\\console\\controllers', $name);
-    }
-
-    private function contentControllerExists($name)
-    {
-        return $this->checkForFile(APP_DIR . '\\content', $name);
-    }
-
-    private function modelExists($name)
-    {
-        return $this->checkForFile(APP_DIR . '\\models', $name);
-    }
-
-    private function cmdModelExists($name)
-    {
-        return $this->checkForFile(HOME_DIR . '\\console\\models', $name);
-    }
-
-    private function ruleExists($name)
-    {
-        return $this->checkForFile(APP_DIR . '\\user\\rules', $name);
     }
 
 }

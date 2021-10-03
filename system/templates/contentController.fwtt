@@ -1,6 +1,6 @@
 <?php
 
-namespace app\content;
+namespace app\content*NAMESPACE*;
 
 use system\core\Content;
 
