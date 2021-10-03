@@ -1,0 +1,15 @@
+<?php
+
+namespace app\content;
+
+use system\core\Content;
+
+class *NAME* extends Content
+{
+
+    public function init()
+    {
+        $this->render();
+    }
+
+}

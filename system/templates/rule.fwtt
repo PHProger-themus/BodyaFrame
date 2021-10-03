@@ -1,0 +1,12 @@
+<?php
+
+namespace app\user\rules;
+
+class *NAME*
+{
+
+    public function apply() {
+
+    }
+
+}

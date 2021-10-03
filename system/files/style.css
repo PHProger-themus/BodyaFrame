@@ -1,0 +1,42 @@
+@font-face {
+    font-family: Rubik;
+    src: url(/app/files/fonts/Rubik-Regular.ttf);
+}
+body {
+    margin: 0;
+    font-family: Rubik, sans-serif;
+}
+.error_title {
+    margin: 0;
+    padding: 20px;
+    background: gainsboro;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-left: 15px solid red;
+}
+.error_box {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+}
+.error_box ul {
+    padding: 0;
+    list-style-type: none;
+    font-size: 20px;
+}
+.error_box ul li {
+    padding: 5px;
+}
+.trace p {
+    font-size: 30px;
+    margin-bottom: 0;
+}
+.error_block {
+    text-align: center;
+}
+.error_block .error {
+    font-size: 100px;
+    margin: 10px;
+    font-weight: bold;
+}

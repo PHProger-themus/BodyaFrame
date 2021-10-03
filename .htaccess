@@ -1,0 +1,15 @@
+AddDefaultCharset utf-8
+
+Options -Indexes
+
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^www\.(.*)$
+RewriteRule ^(.*)$ http://%1/$1 [L,R=301]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+RewriteCond %{REQUEST_URI} !\.(css|js|php|png|jpg|jpeg|bmp|gif|PNG|svg|docx|webp|ico)$
+RewriteRule ^(.*)$ public/index.php [L]

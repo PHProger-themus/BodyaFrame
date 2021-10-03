@@ -1,0 +1,9 @@
+<?php
+
+require 'system/autoload.php';
+require 'system/config/env.php';
+$config = require 'console/config.php';
+
+Cfg::consoleInit($config);
+
+(new \system\core\Run())->run();
