@@ -7,48 +7,49 @@ use function PHPUnit\Framework\directoryExists;
 
 class Run
 {
-    // TODO: Создание файлов классов
+
     public function run()
     {
-
         global $argv;
-        $method = $argv[1];
+        $method = $argv[1] ?? 'help';
         $params = array_slice($argv, 2);
 
         if (method_exists($this, $method)) {
             $this->$method($params);
         } else {
-            echo "\033[31mНесуществующая команда. php run help для помощи\033[0m\n";
+            echo $this->red("Несуществующая команда \"$method\". Все команды указаны здесь: php run help");
         }
+    }
 
+    private function help()
+    {
+        echo $this->green("HELP команд\n=====================\n");
+        echo "php run...
+        \nfile\tВыполнить файл. Список доступных:\n\t";
+        $controllers_folder = 'console\controllers';
+        $files = scandir($controllers_folder);
+        foreach ($files as $file) {
+            if (str_ends_with($file, 'Controller.php')) {
+                $class_name = '\\' . $controllers_folder . '\\' . substr($file, 0, -4);
+                if (class_exists($class_name)) { // Файл может не содержать класса
+                    $this->getMethods($class_name, $file);
+                }
+            }
+        }
+        echo "\ncreate\tСоздать сущность. Список доступных:\n\t";
+        $templates = require_once(SYSTEM_DIR . '/config/templates.php');
+        foreach ($templates as $template => $params) {
+            echo "$template\n\t";
+        }
+    }
 
-//        for ($i = 1; $i < count($arguments); $i++) {
-//
-//            switch ($arguments[$i]) {
-//
-//                case '-h':
-//
-//                    echo "\nПомощь по командам\n=====================\n\n\t-f\tвыполнить файл, ниже приведен список доступных:\n\n\t";
-//                    $controllers_folder = 'console\controllers';
-//                    $files = scandir($controllers_folder);
-//                    $method_ending = 'Action';
-//                    foreach ($files as $file) {
-//                        if (preg_match('/[\w]+Controller\.php$/', $file)) {
-//                            $class_name = '\\' . $controllers_folder . '\\' . substr($file, 0, -4);
-//                            if (class_exists($class_name)) { // Файл может не содержать класса
-//                                foreach (get_class_methods($class_name) as $method) {
-//                                    if (preg_match('/[\w]+Action$/', $method))
-//                                        echo lcfirst(preg_replace ('/Controller\.php$/', '', $file)) . '/' . substr($method, 0, -6) . "\n\t";
-//                                }
-//                            }
-//                        }
-//                    }
-//                    echo "\n\t-h\tпомощь по консоли\n\n\t";
-//
-//            }
-//
-//        }
-
+    private function getMethods($class_name, $file)
+    {
+        foreach (get_class_methods($class_name) as $method) {
+            if (str_ends_with($method, 'Action')) {
+                echo lcfirst(str_replace('Controller.php', '', $file)) . '/' . str_replace('Action', '', $method) . "\n\t";
+            }
+        }
     }
 
     private function file($params)
@@ -60,9 +61,9 @@ class Run
         $vars = [];
 
         if (!class_exists($controller_class)) {
-            echo "Контроллер " . $file[0] . " не найден\n";
+            echo $this->red("Контроллер " . $file[0] . " не найден");
         } elseif (!method_exists($controller_class, $action)) {
-            echo "Метод " . $file[1] . " не найден в контроллере " . $file[0] . "\n";
+            echo $this->red("Метод " . $file[1] . " не найден в контроллере " . $file[0]);
         } else {
             if ($count > 1) { // Если есть дополнительные параметры
                 for ($i = 1; $i < $count; $i++) {
@@ -81,7 +82,7 @@ class Run
         $types = require_once(SYSTEM_DIR . '/config/templates.php');
 
         if (!array_key_exists($type, $types)) {
-            echo "Неизвестная сущность";
+            echo $this->red("Неизвестная сущность");
         } else {
             $file_info = $types[$type];
 
@@ -121,9 +122,9 @@ class Run
 
             if (!file_exists($full_name)) {
                 $this->createFile($full_name, $name, $file_info);
-                echo "Файл создан";
+                echo $this->green("Файл создан");
             } else {
-                echo "Файл " . $name . " уже существует";
+                echo $this->green("Файл " . $name . " уже существует");
             }
         }
     }
@@ -149,6 +150,16 @@ class Run
             ];
             file_put_contents($full_name, strtr($file_contents, $keywords));
         }
+    }
+
+    private function red(string $text)
+    {
+        return "\033[31m$text\033[0m";
+    }
+
+    private function green(string $text)
+    {
+        return "\033[92m$text\033[0m";
     }
 
 }
