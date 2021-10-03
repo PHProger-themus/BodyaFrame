@@ -22,6 +22,7 @@ namespace system\core;
  * @property array langs
  * @property bool useFile
  * @property int code
+ * @property array db
  */
 class App
 {

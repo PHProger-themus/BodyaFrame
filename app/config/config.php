@@ -1,25 +1,12 @@
 <?php
 
 require_once('functions.php');
-$common_config = require '../config.php';
 
 return [
-
-    //Общий конфиг из корня сайта
-    'common' => $common_config,
 
     //"debug" - отображение специальных ошибок на уровне фреймворка (не создан controller, action и тд.). "db_debug" - вывод выполненных SQL-запросов на текущей странице и ошибок SQL
     'debug' => true,
     'db_debug' => true,
-
-    //Используется ли мультиязычность
-    'multilang' => false,
-    'lang' => 'ru',
-    'langs' => [
-        'ru' => 'рус',
-        'en' => 'eng'
-    ],
-    'useFile' => true,
 
     //Все routes приложения
     'routes' => require_once('../app/web/routes.php'),

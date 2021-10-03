@@ -23,7 +23,15 @@ return [
             ],
         ],
         'useAttributes' => false,
-    ]
+    ],
 
+    //Используется ли мультиязычность
+    'multilang' => false,
+    'lang' => 'ru',
+    'langs' => [
+        'ru' => 'рус',
+        'en' => 'eng'
+    ],
+    'useFile' => true,
 
 ];

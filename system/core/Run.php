@@ -3,6 +3,7 @@
 namespace system\core;
 
 use system\classes\FilesHelper;
+use function PHPUnit\Framework\directoryExists;
 
 class Run
 {
@@ -79,13 +80,10 @@ class Run
         $brief_name = $params[1];
         $types = require_once(SYSTEM_DIR . '/config/templates.php');
 
-        $file = dirname(__DIR__) . '\\templates\\' . $type . '.fwtt';
         if (!array_key_exists($type, $types)) {
             echo "Неизвестная сущность";
         } else {
-            $folder = $types[$type];
-            $name = explode('/', $brief_name);
-            $name = $name[count($name) - 1];
+            $file_info = $types[$type];
 
             switch ($type) {
                 case 'controller';
@@ -96,18 +94,16 @@ class Run
                         }, $brief_name);
                     };
                     break;
-                case 'contentController';
+                case 'content';
                 case 'model';
-                case 'consoleModel';
-                case 'content' :
+                case 'consoleModel' :
                     {
                         $name = preg_replace_callback('/([a-z]+)$/', function($matches) {
                             return ucfirst($matches[1]);
                         }, $brief_name);
                     };
                     break;
-                case 'view';
-                case 'lang';
+                case 'view' :
                     {
                         $name = $brief_name;
                     };
@@ -121,8 +117,10 @@ class Run
                     break;
             }
 
-            if ($new_file = $this->checkForFile($folder, $name)) {
-                $this->createFile($file, $new_file, $name, $folder);
+            $full_name = $file_info[0] . DIRECTORY_SEPARATOR . $name . '.php';
+
+            if (!file_exists($full_name)) {
+                $this->createFile($full_name, $name, $file_info);
                 echo "Файл создан";
             } else {
                 echo "Файл " . $name . " уже существует";
@@ -130,35 +128,27 @@ class Run
         }
     }
 
-    private function createFile($file, $new_file, $name, $folder)
+    private function createFile($full_name, $name, $file_info)
     {
         $path = pathinfo($name);
-        if (!file_exists($path['dirname'])) {
-            mkdir($folder . '/' . $path['dirname'], 0777, true);
-        }
-        copy($file, $new_file);
+        $dirname = ($path['dirname'] == '.' ? '' : $path['dirname']);
+        $filename = $path['filename'];
+        $full_path = $file_info[0] . '/' . $dirname; // Полный путь без имени файла
 
-        $file_contents = file_get_contents($new_file);
+        if (!file_exists($full_path)) {
+            mkdir($full_path, 0777, true);
+        }
+        $file_info[1]($full_name, $filename, $dirname);
+
+        $file_contents = file_get_contents($full_name);
         if (!empty($file_contents)) {
-            $file_name = explode('/', $name);
-            $file_name = $file_name[count($file_name) - 1];
-            $namespace = str_replace('/', '\\', substr($name, 0, -1 * (strlen($file_name) + 1)));
-
-            $file_contents = str_replace('*NAME*', $file_name, $file_contents);
-            $file_contents = str_replace('*NAMESPACE*', (!empty($namespace) ? '\\' : '') . $namespace, $file_contents);
+            $namespace = str_replace('/', '\\', $dirname);
+            $keywords = [
+                '*NAME*' => $filename,
+                '*NAMESPACE*' => (!empty($namespace) ? '\\' : '') . $namespace
+            ];
+            file_put_contents($full_name, strtr($file_contents, $keywords));
         }
-
-        file_put_contents($new_file, $file_contents);
-    }
-
-    private function checkForFile($path, $name)
-    {
-        $name = str_replace('/', '\\', $name);
-        $file = $path . '\\' . $name . '.php';
-        if (!file_exists($file)) {
-            return $file;
-        }
-        return false;
     }
 
 }

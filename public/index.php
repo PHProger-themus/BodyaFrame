@@ -5,7 +5,8 @@ try {
     require HOME_DIR . '/system/autoload.php';
 
     $config = require HOME_DIR . '/app/config/config.php';
-    Cfg::appInit($config);
+    $common_config = require '../config.php';
+    Cfg::appInit($config, $common_config);
     phpInit();
 
     if (isset(Cfg::$get->safety['sessionCookieName'])) {

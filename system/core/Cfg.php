@@ -14,14 +14,14 @@ abstract class Cfg {
      */
     public static $cmd;
 
-    public static function appInit($cfg_data)
+    public static function appInit($cfg_data, $common_cfg_data)
     {
-        self::$get = new App($cfg_data);
+        self::$get = new App(array_merge($cfg_data, $common_cfg_data));
     }
 
-    public static function consoleInit($cfg_data)
+    public static function consoleInit($cfg_data, $common_cfg_data)
     {
-        self::$cmd = new Console($cfg_data);
+        self::$cmd = new Console(array_merge($cfg_data, $common_cfg_data));
     }
 
 }

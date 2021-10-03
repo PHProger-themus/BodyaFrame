@@ -19,7 +19,7 @@ abstract class QueryBuilder extends Model implements QueryBuilderInterface
     public function __construct(string|bool $database = 'db', ArrayHolder $data = null)
     {
         if ($database !== false) {
-            if (Cfg::$get->common['db']['active']) {
+            if (Cfg::$get->db['active']) {
                 $this->setDatabase($database);
             }
             parent::__construct($data);
@@ -28,7 +28,7 @@ abstract class QueryBuilder extends Model implements QueryBuilderInterface
 
     protected function setDatabase(string $database = null): void
     {
-        if (Cfg::$get->common['db']['useAttributes']) {
+        if (Cfg::$get->db['useAttributes']) {
             $methods = (new ReflectionClass(new static(false)))->getMethods(\ReflectionMethod::IS_PUBLIC);
             foreach ($methods as $method) {
                 $attributes = $method->getAttributes(ToDatabase::class);
@@ -39,7 +39,7 @@ abstract class QueryBuilder extends Model implements QueryBuilderInterface
                 }
             }
         }
-        $this->dbi = ArrayHolder::new(Cfg::$get->common['db']['databases'][$database]);
+        $this->dbi = ArrayHolder::new(Cfg::$get->db['databases'][$database]);
         $this->connect();
     }
 
