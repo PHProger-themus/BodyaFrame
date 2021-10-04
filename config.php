@@ -7,8 +7,8 @@ return [
         'databases' => [
             'db' => [
                 'host' => 'localhost',
-                'username' => 'comfstud',
-                'password' => 'Blurryface5656',
+                'username' => 'root',
+                'password' => 'root',
                 'database' => 'mybase',
                 'prefix' => 'fr_',
                 'trusted_tables' => ['active', 'users', 'objects']
@@ -33,5 +33,9 @@ return [
         'en' => 'eng'
     ],
     'useFile' => true,
+
+    //"debug" - отображение специальных ошибок на уровне фреймворка (не создан controller, action и тд.). "db_debug" - вывод выполненных SQL-запросов на текущей странице и ошибок SQL
+    'debug' => true,
+    'db_debug' => true,
 
 ];

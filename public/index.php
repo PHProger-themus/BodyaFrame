@@ -1,12 +1,12 @@
 <?php
 try {
-    //TODO: Type-hinting, interfaces for all functions, PHPDocs, Reformatting, add variables to loops
+    //TODO: Type-hinting, interfaces for all functions, PHPDocs, Reformatting, add variables to loops, if( -> if (
     require '../system/config/env.php';
     require HOME_DIR . '/system/autoload.php';
 
     $config = require HOME_DIR . '/app/config/config.php';
     $common_config = require '../config.php';
-    Cfg::appInit($config, $common_config);
+    Cfg::init($config, $common_config);
     phpInit();
 
     if (isset(Cfg::$get->safety['sessionCookieName'])) {

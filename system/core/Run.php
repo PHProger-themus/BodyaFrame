@@ -2,9 +2,6 @@
 
 namespace system\core;
 
-use system\classes\FilesHelper;
-use function PHPUnit\Framework\directoryExists;
-
 class Run
 {
 
@@ -160,6 +157,35 @@ class Run
     private function green(string $text)
     {
         return "\033[92m$text\033[0m";
+    }
+
+    private function migrate(array $params)
+    {
+        $this->applyMigrations($params, "up");
+    }
+
+    private function rollback(array $params)
+    {
+        $this->applyMigrations($params, "down");
+    }
+
+    private function applyMigrations(array $params, string $method)
+    {
+        $migrations_folder = HOME_DIR . "/console/migrations";
+        if (empty($params)) {
+            $migrations = array_slice(scandir($migrations_folder), 2);
+            $this->invokeMigrationsMethod($migrations, $method);
+        } else {
+            $this->invokeMigrationsMethod($params, $method);
+        }
+    }
+
+    private function invokeMigrationsMethod(array $migrations, string $method)
+    {
+        foreach ($migrations as $migration) {
+            $class = "\\console\\migrations\\" . substr($migration, 0, -4);
+            (new $class())->$method();
+        }
     }
 
 }

@@ -4,10 +4,6 @@ require_once('functions.php');
 
 return [
 
-    //"debug" - отображение специальных ошибок на уровне фреймворка (не создан controller, action и тд.). "db_debug" - вывод выполненных SQL-запросов на текущей странице и ошибок SQL
-    'debug' => true,
-    'db_debug' => true,
-
     //Все routes приложения
     'routes' => require_once('../app/web/routes.php'),
     

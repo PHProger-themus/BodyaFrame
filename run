@@ -5,6 +5,6 @@ require 'system/config/env.php';
 $config = require 'console/config.php';
 $common_config = require 'config.php';
 
-Cfg::consoleInit($config, $common_config);
+Cfg::init($config, $common_config);
 
 (new \system\core\Run())->run();

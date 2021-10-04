@@ -2,74 +2,13 @@
 
 namespace system\core;
 
-use app\attributes\ToDatabase;
 use PDO;
-use ReflectionClass;
 use system\classes\ArrayHolder;
 use system\classes\SafetyManager;
 use system\interfaces\QueryBuilderInterface;
 
-abstract class QueryBuilder extends Model implements QueryBuilderInterface
+abstract class QueryBuilder extends DB implements QueryBuilderInterface
 {
-
-    private string $query = '';
-    private ArrayHolder $dbi;
-    private PDO $db;
-
-    public function __construct(string|bool $database = 'db', ArrayHolder $data = null)
-    {
-        if ($database !== false) {
-            if (Cfg::$get->db['active']) {
-                $this->setDatabase($database);
-            }
-            parent::__construct($data);
-        }
-    }
-
-    protected function setDatabase(string $database = null): void
-    {
-        if (Cfg::$get->db['useAttributes']) {
-            $methods = (new ReflectionClass(new static(false)))->getMethods(\ReflectionMethod::IS_PUBLIC);
-            foreach ($methods as $method) {
-                $attributes = $method->getAttributes(ToDatabase::class);
-                if ($attributes) {
-                    $attribute = $attributes[0]->newInstance();
-                    $database = $attribute->db;
-                    break;
-                }
-            }
-        }
-        $this->dbi = ArrayHolder::new(Cfg::$get->db['databases'][$database]);
-        $this->connect();
-    }
-
-    /**
-     * Выполняет подключение к серверу базы данных.
-     */
-    private function connect(): void
-    {
-        $dsn = 'mysql:host=' . $this->dbi->host . ';dbname=' . $this->dbi->database . ';charset=utf8';
-        $this->db = new PDO($dsn, $this->dbi->username, $this->dbi->password);
-    }
-
-    private function debugOrNothing(string $query)
-    {
-        if (Cfg::$get->db_debug) {
-            db_debug($query);
-            echo $this->db->errorInfo()[2];
-        }
-    }
-
-    public function execute(string $query = null)
-    {
-        if (is_null($query)) {
-            $query = $this->query;
-        }
-        $sth = $this->db->prepare($query);
-        $sth->execute();
-        $this->debugOrNothing($query);
-        return $sth;
-    }
 
     public function getRowsAsArray(string $query = null)
     {

@@ -53,6 +53,6 @@ interface ModelInterface {
      * @param string $path Путь, по которому требуется сохранить файл.
      * @return string Имя загруженного файла.
      */
-    public function uploadFile(array $formFile, string $path, \Closure $generateName);
+    public function uploadFile(array $formFile, string $path, callable $generateName);
     
 }

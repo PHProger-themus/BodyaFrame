@@ -29,8 +29,8 @@ return [
 
     'view' => [APP_DIR . '\\views', function ($name, $filename, $dirname) {
         touch($name);
-        if (Cfg::$cmd->multilang) {
-            $langs = Cfg::$cmd->langs;
+        if (Cfg::$get->multilang) {
+            $langs = Cfg::$get->langs;
             foreach ($langs as $key => $lang) {
                 copy(SYSTEM_DIR . '/templates/lang.fwtt', APP_DIR . "/lang/$key/$dirname/$filename.php");
             }

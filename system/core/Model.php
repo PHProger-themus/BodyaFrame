@@ -130,7 +130,7 @@ class Model implements ModelInterface
     private function processInputByRules(UserInputParser $parser, array $input, string $key, string|array $value): void
     {
         foreach ($input as $rule_key => $rule) {
-            if(isset($this->errors[$key])) {
+            if (isset($this->errors[$key])) {
                 break;
             }
             $rule_method = (is_array($rule) ? $rule_key : $rule);
@@ -160,7 +160,7 @@ class Model implements ModelInterface
         return $this->errors;
     }
 
-    public function uploadFile(array $formFile, string $path, \Closure $generateName = null)
+    public function uploadFile(array $formFile, string $path, callable $generateName = null)
     {
         if (!empty($formFile) && $formFile['error'] == 0) {
             $new_file_name =
