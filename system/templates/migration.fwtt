@@ -1,0 +1,20 @@
+<?php
+
+namespace console\migrations*NAMESPACE*;
+
+use system\core\Migration;
+
+class *NAME* extends Migration
+{
+
+    public function up()
+    {
+        // Migrate
+    }
+
+    public function down()
+    {
+        // Rollback
+    }
+
+}

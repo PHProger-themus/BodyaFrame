@@ -37,4 +37,8 @@ return [
         }
     }],
 
+    'migration' => [HOME_DIR . '\\console\\migrations', function ($name) {
+        copy(SYSTEM_DIR . '/templates/migration.fwtt', $name);
+    }]
+
 ];

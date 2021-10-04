@@ -113,6 +113,13 @@ class Run
                         }, $brief_name);
                     };
                     break;
+                case 'migration' :
+                    {
+                        $name = preg_replace_callback('/([a-z]+)$/', function ($matches) {
+                            return "migration_$matches[1]_" . date('dmyHis');
+                        }, $brief_name);
+                    };
+                    break;
             }
 
             $full_name = $file_info[0] . DIRECTORY_SEPARATOR . $name . '.php';
@@ -131,7 +138,7 @@ class Run
         $path = pathinfo($name);
         $dirname = ($path['dirname'] == '.' ? '' : $path['dirname']);
         $filename = $path['filename'];
-        $full_path = $file_info[0] . '/' . $dirname; // Полный путь без имени файла
+        $full_path = $file_info[0] . '/' . $dirname; // Полный путь без имени файла, для проверки директории
 
         if (!file_exists($full_path)) {
             mkdir($full_path, 0777, true);
@@ -176,6 +183,9 @@ class Run
             $migrations = array_slice(scandir($migrations_folder), 2);
             $this->invokeMigrationsMethod($migrations, $method);
         } else {
+            array_walk($params, function (&$migration_name) {
+                $migration_name = "migration_$migration_name.php";
+            });
             $this->invokeMigrationsMethod($params, $method);
         }
     }
@@ -185,6 +195,12 @@ class Run
         foreach ($migrations as $migration) {
             $class = "\\console\\migrations\\" . substr($migration, 0, -4);
             (new $class())->$method();
+
+            if ($method == "up") {
+                echo $this->green("Миграция $migration была применена") . "\n";
+            } else {
+                echo $this->red("Миграция $migration была отменена") . "\n";
+            }
         }
     }
 
