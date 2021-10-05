@@ -103,7 +103,7 @@ abstract class Commands
                 case 'migration' :
                     {
                         $name = preg_replace_callback('/([a-z_]+)$/', function ($matches) {
-                            return "migration_$matches[1]_" . date('dmyHis');
+                            return "m_" . date('ymdHis') . "_$matches[1]";
                         }, $brief_name);
                     };
                     break;
@@ -161,7 +161,7 @@ abstract class Commands
             $this->invokeMigrationsMethod($migrations, $method);
         } else {
             array_walk($params, function (&$migration_name) {
-                $migration_name = "migration_$migration_name.php";
+                $migration_name = "m_$migration_name.php";
             });
             $this->invokeMigrationsMethod($params, $method);
         }
@@ -169,6 +169,9 @@ abstract class Commands
 
     private function invokeMigrationsMethod(array $migrations, string $method)
     {
+        if ($method == "down") {
+            rsort($migrations);
+        }
         foreach ($migrations as $migration) {
             $class = "\\console\\migrations\\" . substr($migration, 0, -4);
             (new $class())->$method();

@@ -4,7 +4,7 @@ namespace console\migrations;
 
 use system\core\Migration;
 
-class migration_add_pages_041021161530 extends Migration
+class m_211004161530_add_pages extends Migration
 {
 
     public function up()

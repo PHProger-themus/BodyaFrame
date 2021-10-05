@@ -33,6 +33,35 @@ class Migration extends DB
         $this->execute();
     }
 
+    protected function addColumns(string $table, array $columns)
+    {
+        $this->modifyTable("ADD", $table, $columns);
+    }
+
+    protected function dropColumns(string $table, array $columns)
+    {
+        $this->modifyTable("DROP", $table, $columns);
+    }
+
+    protected function alterColumns(string $table, array $columns)
+    {
+        $this->modifyTable("MODIFY", $table, $columns);
+    }
+
+    private function modifyTable(string $action, string $table, array $columns)
+    {
+        array_walk($columns, function(&$column) use ($action) {
+            $column = "$action COLUMN " .  $column;
+        });
+        $this->query = "ALTER TABLE {$this->dbi->prefix}$table " . implode(', ', $columns) . ";";
+        $this->execute();
+    }
+
+    protected function renameColumn(string $table, string $old, string $new)
+    {
+        $this->query = "ALTER TABLE {$this->dbi->prefix}$table RENAME COLUMN $old TO $new;";
+        $this->execute();
+    }
 
     protected function int(int $size = 255)
     {
@@ -145,6 +174,18 @@ class Migration extends DB
     protected function unique()
     {
         $this->column .= " UNIQUE";
+        return $this;
+    }
+
+    protected function first()
+    {
+        $this->column .= " FIRST";
+        return $this;
+    }
+
+    protected function AFTER(string $column)
+    {
+        $this->column .= " AFTER $column";
         return $this;
     }
 
