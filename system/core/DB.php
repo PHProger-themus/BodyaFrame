@@ -66,7 +66,6 @@ abstract class DB extends Model
         $sth = $this->db->prepare($query);
         $sth->execute();
         $this->debugOrNothing($query);
-        return $sth;
     }
 
 }

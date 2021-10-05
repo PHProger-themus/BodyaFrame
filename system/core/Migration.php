@@ -10,7 +10,7 @@ class Migration extends DB
 
     protected function createTable(string $name, array $columns)
     {
-        $this->query = "CREATE TABLE IF NOT EXISTS $name (" . implode(', ', $columns);
+        $this->query = "CREATE TABLE IF NOT EXISTS {$this->dbi->prefix}$name (" . implode(', ', $columns);
 
         if (!empty($this->foreigns)) {
             foreach ($this->foreigns as $column => $reference) {
@@ -26,9 +26,13 @@ class Migration extends DB
 
     protected function dropTable(string ...$tables)
     {
-        $this->query = "DROP TABLE " . implode(', ', $tables) . ";";
+        array_walk($tables, function(&$table) {
+            $table = $this->dbi->prefix .  $table;
+        });
+        $this->query = "DROP TABLE IF EXISTS " . implode(', ', $tables) . ";";
         $this->execute();
     }
+
 
     protected function int(int $size = 255)
     {
