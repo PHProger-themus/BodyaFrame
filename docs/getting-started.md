@@ -1,7 +1,6 @@
 # Getting started with BodyaFrame
 
 ### Contents
-
 - [Installation](#Installation)
 - [Working environment](#Working-environment)
 - [Initial Configuration](#Initial-Configuration)
@@ -72,7 +71,7 @@ Go to `app/config/config.php`.
  - Form validation
  - Database methods
  - Console
- - Migrations
+ - [Migrations](./migrations.md)
  - Logging
  - Security
  - UNIT Testing
