@@ -3,9 +3,9 @@
 ### Contents
 
 - [Installation](#Installation)
-- [Working environment](#Working environment)
-- [Initial Configuration](#Initial Configuration)
-- [Framework features list](#Framework features list)
+- [Working environment](#Working-environment)
+- [Initial Configuration](#Initial-Configuration)
+- [Framework features list](#Framework-features-list)
 ## Installation
 To install framework, pull this repository into your folder and run `composer install` to install necessary packages which are required for framework.
 
