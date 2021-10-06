@@ -2,6 +2,8 @@
 
 This MVC framework is used by me only when developing websites. But it's main purpose is practical object. I prefer implementing new features here, refactoring old features.
 
+**Documentation:** [Click here](./docs/getting-started.md)
+
 This framework supports (* - planning):
 
  - Convenient routing system;
@@ -12,6 +14,6 @@ This framework supports (* - planning):
  - Automatic CSS and JS files including system;
  - Safety providing: automatic XSS preventing text escaping, CSRF protection, Content-Security-Policy header support, possibility to restrict using website in <frame> tag, change session name and etc.
  - Logging system (implemented with PSR-3 Standard);
- - Console features: files creating, migrations*, user methods;
+ - Console features: files creating, migrations, user methods;
  - PHPUnit*;
  - Framework works with Composer.
