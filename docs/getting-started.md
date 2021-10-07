@@ -70,7 +70,7 @@ Go to `app/config/config.php`.
  - Multilingualism
  - Form validation
  - Database methods
- - Console
+ - [Console](./console.md)
  - [Migrations](./migrations.md)
  - Logging
  - Security
