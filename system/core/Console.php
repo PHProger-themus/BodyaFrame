@@ -47,7 +47,7 @@ abstract class Console extends Commands
         if (method_exists($this, $method)) {
             $this->$method(array_slice($commands, 2));
         } else {
-            echo $this->red("Несуществующая команда \"$method\". Все команды указаны здесь: php run help");
+            echo $this->red("Несуществующая команда \"$method\".");
         }
     }
 

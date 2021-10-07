@@ -14,7 +14,7 @@ class Run extends Console
         if (method_exists($this, $method)) {
             $this->$method($params);
         } else {
-            echo $this->red("Несуществующая команда \"$method\". Все команды указаны здесь: php run help");
+            echo $this->red("Несуществующая команда \"$method\".");
         }
     }
 
