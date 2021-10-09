@@ -26,7 +26,7 @@ return [
     ],
 
     //Используется ли мультиязычность
-    'multilang' => false,
+    'multilang' => true,
     'lang' => 'ru',
     'langs' => [
         'ru' => 'рус',

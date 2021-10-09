@@ -1,5 +1,5 @@
 <?php
-
+//TODO: Заменить конкатенацию на строки с двойными кавычками
 namespace system\core;
 
 use system\classes\ArrayHolder;
@@ -14,13 +14,13 @@ class View implements ViewInterface
     private string $app_prefix, $css_folder, $js_folder;
     private string|array $css_files, $js_files;
     private bool $disable_cache;
-    private int $response_code;
+    private string $page_name;
 
-    public function __construct()
+    public function __construct(int $page_type = 1, ?string $page_name = null)
     {
-        $this->response_code = http_response_code();
-        if ($this->response_code >= 400) {
+        if (!$page_type) {
             $this->route = 'error';
+            $this->page_name = $page_name;
         } else {
             $this->route = Cfg::$get->route->getController() . '/' . Cfg::$get->route->getAction();
         }
@@ -35,51 +35,47 @@ class View implements ViewInterface
     public function render($vars = array()): void
     {
         extract($this->filterData($vars));
-        $meta = require '../app/lang/' . Cfg::$get->lang . '/meta.php';
-//TODO: Заменить конкатенацию на строки с двойными кавычками
-        if ($this->route == 'error') {
-            Cfg::$get->route->init($meta['error' . $this->response_code]);
-            $view_file = APP_DIR . "/views/errors/" . $this->response_code . ".php";
-        } else {
-            if (Cfg::$get->route->getController() != "admin") {
-                if (array_key_exists($this->route, $meta)) {
-                    Cfg::$get->route->init($meta[$this->route]);
-                } else {
-                    Cfg::$get->route->init(['title' => $this->route]);
-                }
-            }
-            $view_file = "../app/views/" . Cfg::$get->route->getController() . "/" . Cfg::$get->route->getAction() . ".php";
-        }
 
         $page = new \StdClass();
         $page->css = $this->getCSSList();
         $page->js = $this->getJSList();
 
+        $view_file = $this->getPage();
         if (file_exists($view_file)) {
             ob_start();
             require $view_file;
             $content = ob_get_clean();
         } else {
-            if (Cfg::$get->debug) {
-                throw new \Error("Не найден файл View " . $this->route . ".php");
-            } else {
-                Errors::code(404);
-            }
+             throw new \Error("Не найден файл View " . $this->route . ".php");
         }
 
         $csp = $this->configureCSP();
         if ($csp) {
             header($csp);
         }
-
         if (isset(Cfg::$get->safety['xFrameOptions'])) {
             header("X-Frame-Options: " . Cfg::$get->safety['xFrameOptions']);
         }
 
-        if (Cfg::$get->route->getController() == "admin")
-            require APP_DIR . '/views/common/admin.php';
-        else
-            require APP_DIR . '/views/common/wrapper.php';
+        require APP_DIR . "/views/common/wrapper.php";
+    }
+
+    private function getPage()
+    {
+        $meta = require APP_DIR . "/lang/" . Cfg::$get->lang . "/meta.php";
+        if ($this->route == 'error') {
+            $meta_system = require SYSTEM_DIR . "/lang/" . Cfg::$get->lang . "/meta.php";
+            $error_meta_data = 'error' . ucfirst($this->page_name);
+            Cfg::$get->route->init($meta[$error_meta_data] ?? $meta_system[$error_meta_data]);
+            return APP_DIR . "/views/errors/" . $this->page_name . ".php";
+        } else {
+            if (array_key_exists($this->route, $meta)) {
+                Cfg::$get->route->init($meta[$this->route]);
+            } else {
+                Cfg::$get->route->init(['title' => $this->route]);
+            }
+            return APP_DIR . "/views/" . Cfg::$get->route->getController() . "/" . Cfg::$get->route->getAction() . ".php";
+        }
     }
 
     private function getCSSList()
@@ -112,12 +108,12 @@ class View implements ViewInterface
 
     private function css(string $file)
     {
-        return "<link rel='stylesheet' href='" . $this->app_prefix . $this->css_folder . "/" . $file . ($this->disable_cache ? "?v=" . date('YmdHis') : '') . "' type='text/css'>\n";
+        return "<link rel='stylesheet' href='" . $this->app_prefix . $this->css_folder . "/" . $file . (!$this->disable_cache ? "?v=" . date('YmdHis') : '') . "' type='text/css'>\n";
     }
 
     private function js(string $file)
     {
-        return "<script src='" . $this->app_prefix . $this->js_folder . "/" . $file . ($this->disable_cache ? "?v=" . date('YmdHis') : '') . "'></script>\n";
+        return "<script src='" . $this->app_prefix . $this->js_folder . "/" . $file . (!$this->disable_cache ? "?v=" . date('YmdHis') : '') . "'></script>\n";
     }
 
     private function includeFiles($key, $file, &$str, string $type)
@@ -139,11 +135,11 @@ class View implements ViewInterface
 
             $csp_rules = $csp['rules'];
             if (isset($csp_rules[$this->route])) {
-                $this->addSCPRule($csp_rules[$this->route], $csp_header);
+                $this->addCSPRule($csp_rules[$this->route], $csp_header);
             } elseif (isset($csp_rules['none']) && array_search($this->route, $csp_rules['none']) !== false) {
                 return false;
             } elseif (isset($csp_rules['*'])) {
-                $this->addSCPRule($csp_rules['*'], $csp_header);
+                $this->addCSPRule($csp_rules['*'], $csp_header);
             } else {
                 return false;
             }
@@ -156,7 +152,7 @@ class View implements ViewInterface
         }
     }
 
-    private function addSCPRule($route_rules, &$csp_header)
+    private function addCSPRule($route_rules, &$csp_header)
     {
         foreach ($route_rules as $rule => $value) {
             $csp_header .= " {$rule}";
@@ -198,48 +194,48 @@ class View implements ViewInterface
         return SafetyManager::filterString($value);
     }
 
-    public function setBreadcrumbs(array $breadcrumbs)
-    {
-        $this->breadcrumbs = $breadcrumbs;
-    }
-
-    public function getBreadcrumbs()
-    {
-
-        if ($this->breadcrumbs) {
-
-            return $this->breadcrumbs;
-
-        } else {
-
-            $routes = Cfg::$get->routes;
-            $url = null;
-            $url_parts = explode('/', Cfg::$get->route->getPath());
-            $url_parts_filled = explode('/', trim(Cfg::$get->url, '/'));
-            $breadcrumbs = array(Cfg::$get->website['main_page'] => $routes[Cfg::$get->website['main_page']]['title']);
-            $url_params = array();
-
-            for ($i = 0; $i < count($url_parts); $i++) {
-                if ($url_parts[$i] != $url_parts_filled[$i]) $url_params[$url_parts[$i]] = $url_parts_filled[$i];
-            }
-
-            foreach ($url_parts as $path) {
-                $url .= ((is_null($url)) ? $path : '/' . $path);
-                if (array_key_exists($url, $routes)) {
-                    $url_to_replace = $url;
-                    $title_to_replace = $routes[$url]['title'];
-                    foreach ($url_params as $var => $val) {
-                        $url_to_replace = str_replace($var, $val, $url_to_replace);
-                        $title_to_replace = str_replace($var, $val, $title_to_replace);
-                    }
-                    $breadcrumbs[$url_to_replace] = $title_to_replace;
-                }
-            }
-
-            return $breadcrumbs;
-        }
-
-    }
+//    public function setBreadcrumbs(array $breadcrumbs)
+//    {
+//        $this->breadcrumbs = $breadcrumbs;
+//    }
+//
+//    public function getBreadcrumbs()
+//    {
+//
+//        if ($this->breadcrumbs) {
+//
+//            return $this->breadcrumbs;
+//
+//        } else {
+//
+//            $routes = Cfg::$get->routes;
+//            $url = null;
+//            $url_parts = explode('/', Cfg::$get->route->getPath());
+//            $url_parts_filled = explode('/', trim(Cfg::$get->url, '/'));
+//            $breadcrumbs = array(Cfg::$get->website['main_page'] => $routes[Cfg::$get->website['main_page']]['title']);
+//            $url_params = array();
+//
+//            for ($i = 0; $i < count($url_parts); $i++) {
+//                if ($url_parts[$i] != $url_parts_filled[$i]) $url_params[$url_parts[$i]] = $url_parts_filled[$i];
+//            }
+//
+//            foreach ($url_parts as $path) {
+//                $url .= ((is_null($url)) ? $path : '/' . $path);
+//                if (array_key_exists($url, $routes)) {
+//                    $url_to_replace = $url;
+//                    $title_to_replace = $routes[$url]['title'];
+//                    foreach ($url_params as $var => $val) {
+//                        $url_to_replace = str_replace($var, $val, $url_to_replace);
+//                        $title_to_replace = str_replace($var, $val, $title_to_replace);
+//                    }
+//                    $breadcrumbs[$url_to_replace] = $title_to_replace;
+//                }
+//            }
+//
+//            return $breadcrumbs;
+//        }
+//
+//    }
 
     public static function setPopupMessage(string $message, string $type = Errors::SUCCESS)
     {

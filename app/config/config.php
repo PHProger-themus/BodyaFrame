@@ -4,6 +4,12 @@ require_once('functions.php');
 
 return [
 
+    //Установка опции в false переведет сайт в режим обслуживания, сделав его недоступным для пользователя
+    'active' => true,
+    'allowedFor' => [
+        ''
+    ],
+
     //Все routes приложения
     'routes' => require_once('../app/web/routes.php'),
     
@@ -29,7 +35,7 @@ return [
 	'disableCache' => true,
 	'links' => [
 		'css' => [
-			'system.css' => ['main/index', 'page/page'],
+			'system.css',
             'errors.css' => ['error']
 		],
 		'js' => [

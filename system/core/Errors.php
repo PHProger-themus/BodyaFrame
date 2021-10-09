@@ -2,8 +2,6 @@
 
 namespace system\core;
 
-use system\classes\ArrayHolder;
-
 abstract class Errors
 {
 
@@ -14,19 +12,26 @@ abstract class Errors
 
     public static function error(string $message, array $extra)
     {
-        //$extra['trace'] = debug_backtrace();
         $params = array_merge(['message' => $message], $extra);
-        System::renderError('Error', $params);
+        if (Cfg::$get->debug) {
+            System::renderError('Error', $params);
+        } else {
+            self::code(404);
+        }
         die();
     }
 
     public static function code($response_code): void
     {
         http_response_code($response_code);
-        $view = new View();
+        self::renderPage($response_code);
+    }
+
+    public static function renderPage(string $page)
+    {
+        $view = new View(0, $page);
         $view->render();
         die();
     }
-
 
 }

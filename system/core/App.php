@@ -23,6 +23,8 @@ namespace system\core;
  * @property bool useFile
  * @property int code
  * @property array db
+ * @property bool active
+ * @property array allowedFor
  */
 class App
 {

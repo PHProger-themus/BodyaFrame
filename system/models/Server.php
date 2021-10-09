@@ -2,6 +2,7 @@
 
 namespace system\models;
 
+use Error;
 use system\core\SystemException;
 
 class Server {
@@ -29,11 +30,11 @@ class Server {
      * @return mixed Значение сессионной переменной
     */
     public function getSession(string $key) {
-        try {
-            if (isset($_SESSION[$key])) return $_SESSION[$key];
-            else throw new SystemException("Сессионной переменной " . $key . " не существует");
-        } catch (SystemException $e) {
-            die($e);
+        if (isset($_SESSION[$key])) {
+            return $_SESSION[$key];
+        }
+        else {
+            throw new Error("Сессионной переменной " . $key . " не существует");
         }
     }
 
@@ -43,15 +44,12 @@ class Server {
      * @return mixed Значение сессионной переменной
      */
     public function extractSession(string $key) {
-        try {
-            if (isset($_SESSION[$key])) {
-                $value = $_SESSION[$key];
-                $this->unsetSession([$key]);
-                return $value;
-            }
-            else throw new SystemException("Сессионной переменной " . $key . " не существует");
-        } catch (SystemException $e) {
-            die($e);
+        if (isset($_SESSION[$key])) {
+            $value = $_SESSION[$key];
+            $this->unsetSession([$key]);
+            return $value;
+        } else {
+            throw new Error("Сессионной переменной " . $key . " не существует");
         }
     }
     
@@ -71,21 +69,13 @@ class Server {
      * @param array $values Массив с ключами переменных.
     */
     public function unsetSession(array $values) {
-        $errors = false;
         foreach ($values as $key) {
-            try {
-                if (!isset($_SESSION[$key])) {
-                    $errors = true;
-                    throw new SystemException("Сессионной переменной " . $key . " не существует");
-                }
-            } catch (SystemException $e) {
-                die($e);
+            if (!isset($_SESSION[$key])) {
+                throw new Error("Сессионной переменной " . $key . " не существует");
             }
         }
-        if (!$errors) {
-            foreach ($values as $key) {
-                unset($_SESSION[$key]);
-            }
+        foreach ($values as $key) {
+            unset($_SESSION[$key]);
         }
     }
     

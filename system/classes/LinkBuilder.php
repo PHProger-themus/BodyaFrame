@@ -8,22 +8,24 @@ use Cfg;
 class LinkBuilder
 {
 
-    public static function addLang(string $lang = null)
+    public static function addPrefix(string $lang = null)
     {
+        $prefix = Cfg::$get->website['prefix'];
         if (Cfg::$get->multilang) {
             if (!is_null($lang)) {
-                return $lang;
+                return "$prefix/$lang";
             } else {
-                return Cfg::$get->lang;
+                return "$prefix/" . Cfg::$get->lang;
             }
         } else {
-            return '';
+            return $prefix;
         }
     }
 
     public static function url(string $controller, string $action, array $vars = [])
     {
         $routes = Cfg::$get->routes;
+        $path = '';
 
         foreach ($routes as $route => $params) {
 
@@ -42,21 +44,21 @@ class LinkBuilder
                 }
 
                 if (isset($vars['get'])) $route .= '?' . http_build_query($vars['get']);
+                $path = $route;
 
-                $lang = self::addLang(($vars['lang'] ?? null));
-                return Cfg::$get->website['prefix'] . '/' . $lang . (!empty($route) ? '/' : '') . $route;
             }
 
         }
 
-        return '#';
+        $prefix = self::addPrefix(($vars['lang'] ?? null));
+        return $prefix . (!empty($path) ? '/' : '') . $path;
+
     }
 
-    public static function raw(string $url, string $lang = '')
+    public static function redirect(string $url, string $lang = null)
     {
-        $lang = (!empty($lang) ? $lang . '/' : '');
-        $url = trim($url, '/');
-        header('Location: ' . Cfg::$get->website['prefix'] . '/' . $lang . self::filterUrl($url));
+        $url = trim($url, "/");
+        header("Location: " . self::addPrefix($lang) . "/{$url}");
         die();
     }
 

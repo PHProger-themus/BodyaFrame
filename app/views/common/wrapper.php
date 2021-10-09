@@ -1,8 +1,6 @@
 <?php
-
 use system\classes\LinkBuilder;
 use system\core\Cfg;
-
 ?>
 <!DOCTYPE html>
 <html lang="ru">

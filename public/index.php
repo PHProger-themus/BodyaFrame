@@ -9,17 +9,11 @@ try {
     Cfg::init($config, $common_config);
     phpInit();
 
-    if (isset(Cfg::$get->safety['sessionCookieName'])) {
-        session_name(Cfg::$get->safety['sessionCookieName']);
-    }
+    session_name(Cfg::$get->safety['sessionCookieName']?:null);
     session_start();
 
-    if (Cfg::$get->debug) {
-        ini_set('display_errors', true);
-        error_reporting(E_ALL);
-    }
-
     (new \system\core\Router())->run();
+
 } catch (Error $e) {
     Errors::error($e->getMessage(), ['trace' => $e->getTrace(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
 }
