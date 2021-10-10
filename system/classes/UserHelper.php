@@ -10,6 +10,11 @@ use View;
 class UserHelper extends QueryBuilder
 {
 
+    public function table()
+    {
+        return 'users';
+    }
+
     public static function signupUser(ModelInterface $model, array $columns, string $table = null) {
         $insertData = [];
         foreach ($columns as $column) {
@@ -41,24 +46,24 @@ class UserHelper extends QueryBuilder
             foreach ($rows[0] as $row => $value) {
                 $userInfo[$row] = $value;
             }
-            Cfg::$get->server->setSession(['userSigned' => true, 'userInfo' => $userInfo]);
+            Server::setSession(['userSigned' => true, 'userInfo' => $userInfo]);
         }
     }
 
     public static function getUserInfo() {
-        $userSigned = Cfg::$get->server->issetSession('userSigned');
+        $userSigned = Server::issetSession('userSigned');
         $userInfo = ['userSigned' => $userSigned ? true : false];
         if ($userSigned) {
-            $userInfo['userInfo'] = Cfg::$get->server->getSession('userInfo');
+            $userInfo['userInfo'] = Server::getSession('userInfo');
         }
         return ArrayHolder::new($userInfo);
     }
 
-    public static function logout(string $redirectUrl) {
-        if (Cfg::$get->server->issetSession('userSigned')) {
-            Cfg::$get->server->unsetSession(['userSigned', 'userInfo']);
+    public static function logout(string $redirectUrl = '/') {
+        if (Server::issetSession('userSigned')) {
+            Server::unsetSession(['userSigned', 'userInfo']);
         }
-        View::goToPage($redirectUrl);
+        LinkBuilder::redirect($redirectUrl);
     }
 
 }

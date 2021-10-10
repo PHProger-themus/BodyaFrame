@@ -3,14 +3,16 @@
 namespace app\user\rules;
 
 use Cfg;
+use system\classes\LinkBuilder;
 use View;
+use system\classes\Server;
 
 class AccessRule
 {
 
     public function apply() {
-        if (Cfg::$get->server->issetSession('userSigned')) {
-            View::goToPage('/');
+        if (Server::issetSession('userSigned')) {
+            LinkBuilder::redirect('/');
         }
     }
 

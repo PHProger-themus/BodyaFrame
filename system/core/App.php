@@ -10,7 +10,6 @@ namespace system\core;
  * @property string lang
  * @property array routes
  * @property string url
- * @property \system\models\Server      server
  * @property string device
  * @property array website
  * @property string cssFolder

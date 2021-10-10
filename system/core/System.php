@@ -2,6 +2,8 @@
 
 namespace system\core;
 
+use system\classes\Server;
+
 class System {
     
     public static function renderError($filename, $vars = [])
@@ -27,7 +29,7 @@ class System {
 
     private static function renderPopup($vars = [])
     {
-        $message = Cfg::$get->server->getSession('popupMessage');
+        $message = Server::getSession('popupMessage');
         extract($vars);
         require '../system/content/Popup.php';
     }

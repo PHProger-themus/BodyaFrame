@@ -22,7 +22,7 @@ class FormHelper
             if (self::$CSRFToken == "") {
                 $token = self::generateCsrfToken();
                 self::$CSRFToken = $token;
-                Cfg::$get->server->setSession(['csrfToken' => $token]);
+                Server::setSession(['csrfToken' => $token]);
             }
             self::$form = "<input type='hidden' name='_csrfToken' value='" . self::$CSRFToken . "' />" . self::$form;
         }
@@ -56,8 +56,8 @@ class FormHelper
     public static function getValue($input_name, $form_name, $initial_value = null)
     {
         $session_key = $form_name . '_' . $input_name;
-        if (Cfg::$get->server->issetSession($session_key)) {
-            return Cfg::$get->server->extractSession($session_key);
+        if (Server::issetSession($session_key)) {
+            return Server::extractSession($session_key);
         }
         return $initial_value;
     }

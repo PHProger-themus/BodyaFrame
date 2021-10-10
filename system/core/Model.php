@@ -4,6 +4,7 @@ namespace system\core;
 
 use system\classes\ArrayHolder;
 use system\classes\SafetyManager;
+use system\classes\Server;
 use system\interfaces\ModelInterface;
 use app\user\models\UserInputParser;
 
@@ -37,7 +38,7 @@ class Model implements ModelInterface
     {
         foreach ($this->form as $input => $value) {
             if ($this->notServiceField($input) && !is_array($value)) {
-                Cfg::$get->server->setSession([$this->form->_formName . '_' . $input => $value]);
+                Server::setSession([$this->form->_formName . '_' . $input => $value]);
             }
         }
     }
@@ -71,7 +72,7 @@ class Model implements ModelInterface
     private function checkCSRF()
     {
         if (Cfg::$get->safety['csrfProtection']) {
-            if (!isset($this->form->_csrfToken) || !Cfg::$get->server->issetSession('csrfToken') || $this->form->_csrfToken != Cfg::$get->server->getSession('csrfToken')) {
+            if (!isset($this->form->_csrfToken) || !Server::issetSession('csrfToken') || $this->form->_csrfToken != Server::getSession('csrfToken')) {
                 Errors::code(419);
             }
         }
@@ -92,11 +93,11 @@ class Model implements ModelInterface
         $sessionToDelete = [];
         foreach ($this->form as $input => $value) {
             $inputName = $this->form->_formName . '_' . $input;
-            if ($this->notServiceField($input) && Cfg::$get->server->issetSession($inputName)) {
+            if ($this->notServiceField($input) && Server::issetSession($inputName)) {
                 $sessionToDelete[] = $inputName;
             }
         }
-        Cfg::$get->server->unsetSession($sessionToDelete);
+        Server::unsetSession($sessionToDelete);
     }
 
     /**

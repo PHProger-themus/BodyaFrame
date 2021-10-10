@@ -29,6 +29,7 @@ abstract class Errors
 
     public static function renderPage(string $page)
     {
+        Lang::init("error/$page");
         $view = new View(0, $page);
         $view->render();
         die();

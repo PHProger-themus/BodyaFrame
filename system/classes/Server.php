@@ -1,9 +1,8 @@
 <?php
 
-namespace system\models;
+namespace system\classes;
 
 use Error;
-use system\core\SystemException;
 
 class Server {
     
@@ -11,7 +10,7 @@ class Server {
      * Определяет, были ли инициализированы сессионные переменные
      * @return bool Да / Нет.
     */
-    public function existsSession(): bool {
+    public static function existsSession(): bool {
         return !empty($_SESSION);
     }
     
@@ -20,7 +19,7 @@ class Server {
      * @param string $key Ключ переменной.
      * @return bool Да / Нет.
     */
-    public function issetSession(string $key): bool {
+    public static function issetSession(string $key): bool {
         return isset($_SESSION[$key]);
     }
     
@@ -29,7 +28,7 @@ class Server {
      * @param string $key Ключ переменной.
      * @return mixed Значение сессионной переменной
     */
-    public function getSession(string $key) {
+    public static function getSession(string $key) {
         if (isset($_SESSION[$key])) {
             return $_SESSION[$key];
         }
@@ -43,10 +42,10 @@ class Server {
      * @param string $key Ключ переменной.
      * @return mixed Значение сессионной переменной
      */
-    public function extractSession(string $key) {
+    public static function extractSession(string $key) {
         if (isset($_SESSION[$key])) {
             $value = $_SESSION[$key];
-            $this->unsetSession([$key]);
+            self::unsetSession([$key]);
             return $value;
         } else {
             throw new Error("Сессионной переменной " . $key . " не существует");
@@ -57,7 +56,7 @@ class Server {
      * Инициализировать сессионные переменные
      * @param array $values Массив типа ключ => значение.
     */
-    public function setSession(array $values) {
+    public static function setSession(array $values) {
         foreach ($values as $key => $value) {
             // TODO: Вынести htmlspecialchars с этим параметром в отдельный метод
             $_SESSION[$key] = htmlspecialchars($value, ENT_QUOTES);
@@ -68,7 +67,7 @@ class Server {
      * Удалить сессионные переменные
      * @param array $values Массив с ключами переменных.
     */
-    public function unsetSession(array $values) {
+    public static function unsetSession(array $values) {
         foreach ($values as $key) {
             if (!isset($_SESSION[$key])) {
                 throw new Error("Сессионной переменной " . $key . " не существует");
@@ -82,7 +81,7 @@ class Server {
     /**
      * Очистить сессионный массив
     */
-    public function clearSession() {
+    public static function clearSession() {
         $_SESSION = array();
         //session_destroy();
     }

@@ -9,20 +9,20 @@ abstract class Lang
 
     private static array $lang = [];
 
-    public static function init($controller, $action)
+    public static function init(string $filename)
     {
-        $path_to_lang_file = '../app/lang/' . Cfg::$get->lang . '/' . $controller . '/' . $action . '.php';
-
+        $path_to_lang_file = APP_DIR . "/lang/" . Cfg::$get->lang . "/$filename.php";
         if (!file_exists($path_to_lang_file)) {
-            if (Cfg::$get->debug) {
+            $path_to_system = SYSTEM_DIR . "/lang/" . Cfg::$get->lang . "/$filename.php";
+            if (!file_exists($path_to_system)) {
                 throw new \Error("Не найден файл локализации " . $path_to_lang_file);
             } else {
-                Errors::code(404);
+                $page_lang = require_once($path_to_system);
             }
+        } else {
+            $page_lang = require_once($path_to_lang_file);
         }
-
-        $page_lang = require_once($path_to_lang_file);
-		$wrapper_lang = require_once('../app/lang/' . Cfg::$get->lang . '/wrapper.php');
+        $wrapper_lang = require_once('../app/lang/' . Cfg::$get->lang . '/wrapper.php');
 		self::$lang = array_merge($page_lang, $wrapper_lang);
     }
 

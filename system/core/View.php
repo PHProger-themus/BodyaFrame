@@ -3,7 +3,8 @@
 namespace system\core;
 
 use system\classes\ArrayHolder;
-use system\classes\SafetyManager;
+use system\classes\LinkBuilder;use system\classes\SafetyManager;
+use system\classes\Server;
 use system\interfaces\ViewInterface;
 
 class View implements ViewInterface
@@ -34,11 +35,14 @@ class View implements ViewInterface
 
     public function render($vars = array()): void
     {
+        global $start, $memory;
         extract($this->filterData($vars));
 
-        $page = new \StdClass();
+        $page = Cfg::$get->route;
         $page->css = $this->getCSSList();
         $page->js = $this->getJSList();
+
+        $page->alternate = $this->alternate();
 
         $view_file = $this->getPage();
         if (file_exists($view_file)) {
@@ -49,13 +53,7 @@ class View implements ViewInterface
              throw new \Error("Не найден файл View " . $this->route . ".php");
         }
 
-        $csp = $this->configureCSP();
-        if ($csp) {
-            header($csp);
-        }
-        if (isset(Cfg::$get->safety['xFrameOptions'])) {
-            header("X-Frame-Options: " . Cfg::$get->safety['xFrameOptions']);
-        }
+        $this->sendHeaders();
 
         require APP_DIR . "/views/common/wrapper.php";
     }
@@ -67,15 +65,26 @@ class View implements ViewInterface
             $meta_system = require SYSTEM_DIR . "/lang/" . Cfg::$get->lang . "/meta.php";
             $error_meta_data = 'error' . ucfirst($this->page_name);
             Cfg::$get->route->init($meta[$error_meta_data] ?? $meta_system[$error_meta_data]);
-            return APP_DIR . "/views/errors/" . $this->page_name . ".php";
+            return APP_DIR . "/views/error/" . $this->page_name . ".php";
         } else {
             if (array_key_exists($this->route, $meta)) {
                 Cfg::$get->route->init($meta[$this->route]);
             } else {
                 Cfg::$get->route->init(['title' => $this->route]);
             }
-            return APP_DIR . "/views/" . Cfg::$get->route->getController() . "/" . Cfg::$get->route->getAction() . ".php";
+            return APP_DIR . "/views/{$this->route}.php";
         }
+    }
+
+    private function alternate()
+    {
+        $an_string = "";
+        if (Cfg::$get->multilang && $this->route != 'error') {
+            foreach (Cfg::$get->langs as $lang => $local) {
+                $an_string .= "\n<link rel='alternate' href='" . LinkBuilder::url(Cfg::$get->route->getController(), Cfg::$get->route->getAction(), ['lang' => $lang]) . "' hreflang='$lang' />";
+            }
+        }
+        return $an_string;
     }
 
     private function getCSSList()
@@ -122,6 +131,17 @@ class View implements ViewInterface
             $str .= $this->$type($file); // Если в конфиге файл как строка, подключаем его, он для всех маршрутов. $type - какую функцию вызывать, js или css.
         } elseif (is_array($file) && ($this->routeIsAllowed($file) || $this->routeIsNotProhibited($file))) { // Иначе если он массив, и выполняются 2 условия, то подключаем ключ этого массива, где содержится файл.
             $str .= $this->$type($key);
+        }
+    }
+
+    private function sendHeaders()
+    {
+        $csp = $this->configureCSP();
+        if ($csp) {
+            header($csp);
+        }
+        if (isset(Cfg::$get->safety['xFrameOptions'])) {
+            header("X-Frame-Options: " . Cfg::$get->safety['xFrameOptions']);
         }
     }
 
@@ -239,15 +259,15 @@ class View implements ViewInterface
 
     public static function setPopupMessage(string $message, string $type = Errors::SUCCESS)
     {
-        Cfg::$get->server->setSession(['popupMessage' => $message, 'popupMessageType' => $type]);
+        Server::setSession(['popupMessage' => $message, 'popupMessageType' => $type]);
     }
 
     public static function getPopupMessage()
     {
-        if (Cfg::$get->server->issetSession('popupMessage')) {
-            $messageMethod = Cfg::$get->server->getSession('popupMessageType') . 'Popup';
+        if (Server::issetSession('popupMessage')) {
+            $messageMethod = Server::getSession('popupMessageType') . 'Popup';
             System::$messageMethod();
-            Cfg::$get->server->unsetSession(['popupMessage', 'popupMessageType']);
+            Server::unsetSession(['popupMessage', 'popupMessageType']);
         }
     }
 

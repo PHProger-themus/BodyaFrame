@@ -15,9 +15,6 @@ return [
     
     //Текущий URL страницы без GET-параметров
     'url' => explode('?', $_SERVER['REQUEST_URI'], 2)[0],
-    // TODO: Remove Server
-    //Объект для работы с серверными данными
-    'server' => new system\models\Server(),
 
     //С какого устройства была загружена страница ( mobile / desktop )
     'device' => (preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"])) ? 'mobile' : 'desktop',
@@ -36,13 +33,13 @@ return [
 	'links' => [
 		'css' => [
 			'system.css',
-            'errors.css' => ['error']
+            'error.css' => ['error']
 		],
 		'js' => [
 			'common.js',
 		],
 	],
-    'errorsCss' => APP_DIR . '/files/css/errors.css',
+    'errorsCss' => APP_DIR . '/files/css/error.css',
 
     //Массив данных, используемых в функциях по обеспечению безопасности передаваемых данных
     'safety' => [

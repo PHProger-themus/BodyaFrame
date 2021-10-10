@@ -113,7 +113,7 @@ class Router
             } else {
                 $controller_object = new $controller_class();
                 if ($this->enabledAndNotRestricted() || $this->disabledAndUseFolder()) {
-                    Lang::init($this->params['controller'], $this->params['action']);
+                    Lang::init($this->params['controller'] . '/' .$this->params['action']);
                 }
                 $controller_object->$action(ArrayHolder::new($this->vars), $this->getRulesResults($controller_object));
             }
