@@ -7,7 +7,7 @@ class ArrayHolder
 
     public static function new(array $array)
     {
-        if (!is_null($array)) {
+        if (!empty($array)) {
             $array_object = new ArrayHolder();
             foreach ($array as $key => $data) {
                 $array_object->$key = $data;

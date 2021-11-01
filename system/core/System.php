@@ -11,10 +11,10 @@ class System {
         extract($vars);
 
         ob_start();
-        require SYSTEM_DIR . '/content/' . $filename . '.php';
+        require SYSTEM_DIR . "/content/$filename.php";
         $content = ob_get_clean();
 
-        require SYSTEM_DIR . '/content/Wrapper.php';
+        require SYSTEM_DIR . "/content/Wrapper.php";
         
     }
 
@@ -22,16 +22,16 @@ class System {
     {
         extract($vars);
         if ($return) {
-            return require '../system/content/' . $filename . '.php';
+            return require SYSTEM_DIR . "/content/$filename.php";
         }
-        require '../system/content/' . $filename . '.php';
+        require SYSTEM_DIR . "/content/$filename.php";
     }
 
     private static function renderPopup($vars = [])
     {
         $message = Server::getSession('popupMessage');
         extract($vars);
-        require '../system/content/Popup.php';
+        require SYSTEM_DIR . "/content/Popup.php";
     }
 
     public static function successPopup() {

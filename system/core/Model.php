@@ -5,10 +5,9 @@ namespace system\core;
 use system\classes\ArrayHolder;
 use system\classes\SafetyManager;
 use system\classes\Server;
-use system\interfaces\ModelInterface;
 use app\user\models\UserInputParser;
 
-class Model implements ModelInterface
+class Model
 {
 
     private array $errors = [];

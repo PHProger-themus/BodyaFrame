@@ -11,7 +11,7 @@ return [
     ],
 
     //Все routes приложения
-    'routes' => require_once('../app/web/routes.php'),
+    'routes' => require_once(APP_DIR . '/web/routes.php'),
     
     //Текущий URL страницы без GET-параметров
     'url' => explode('?', $_SERVER['REQUEST_URI'], 2)[0],

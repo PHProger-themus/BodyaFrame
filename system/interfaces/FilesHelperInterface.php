@@ -19,20 +19,4 @@ interface FilesHelperInterface {
     */
     public const ALL = 'all';
     
-    /**
-     * Считает файлы из директории.
-     * @param string $path Путь до директории с файлами.
-     * @param string $mode Режим подсчета (константа).
-     * @return int Количество требуемого контента.   
-    */
-    public static function count(string $path, string $mode = self::FILES) : int;
-    
-    /**
-     * Считает слова в файле.
-     * @param string $path Путь до файла.
-     * @param string $word Слово: <ul><li>FilesHelper::ALL - количество всех слов в файле</li><li>Любое другое слово - поиск именно этого слова</li></ul>
-     * @return int Количество требуемых слов.   
-    */
-    public static function countWordsInFile(string $path, string $word = self::ALL) : int;
-    
 }

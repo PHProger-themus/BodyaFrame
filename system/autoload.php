@@ -1,4 +1,4 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-require __DIR__ . '/aliases.php';
+require HOME_DIR . '/vendor/autoload.php';
+require SYSTEM_DIR . '/aliases.php';

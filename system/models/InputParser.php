@@ -16,11 +16,11 @@ class InputParser
         if (method_exists($model, 'fields')) {
             $this->fields = $model->fields();
         }
-        $validation_file = '../app/lang/' . Cfg::$get->lang . '/validation.php';
+        $validation_file = APP_DIR . "/lang/" . Cfg::$get->lang . "/validation.php";
         if (file_exists($validation_file)) {
             $this->custom_errors = require($validation_file);
         }
-        $this->default_errors = require('../system/lang/' . Cfg::$get->lang . '/validation.php');
+        $this->default_errors = require(SYSTEM_DIR . "/lang/" . Cfg::$get->lang . "/validation.php");
 
     }
 

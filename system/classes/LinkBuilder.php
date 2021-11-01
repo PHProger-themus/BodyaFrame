@@ -38,7 +38,7 @@ class LinkBuilder
                         }, $route);
                     } else {
                         if (Cfg::$get->debug) {
-                            throw new \Error('Не задан подмассив url или неверное количество параметров');
+                            throw new \Error("Не задан подмассив url или неверное количество параметров");
                         }
                     }
                 }

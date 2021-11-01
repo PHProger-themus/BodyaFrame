@@ -28,7 +28,7 @@ class FormHelper
         }
 
         $enctype = str_contains(self::$form, "input type='file'") ? " enctype='multipart/form-data'" : '';
-        $formCreated = "<form method='POST'" . $enctype . "><input type='hidden' name='_formName' value='" . $form_name . "' />" . self::$form . "</form>";
+        $formCreated = "<form method='POST'$enctype><input type='hidden' name='_formName' value='$form_name' />" . self::$form . "</form>";
         echo self::$CSRFToken . "\n";
         echo $formCreated;
         self::$form = '';
@@ -36,19 +36,19 @@ class FormHelper
 
     public static function addInput($type, $name, $attributes = [])
     {
-        self::$form .= "<input type='" . $type . "' name='" . $name . "'" . self::processAttributes($attributes) . " />";
+        self::$form .= "<input type='$type' name='$name'" . self::processAttributes($attributes) . " />";
     }
 
     public static function addSubmit($name, $value, $attributes = [])
     {
-        self::$form .= "<input type='submit' name='" . $name . "' value='" . $value . "'" . self::processAttributes($attributes) . " />";
+        self::$form .= "<input type='submit' name='$name' value='$value'" . self::processAttributes($attributes) . " />";
     }
 
     private static function processAttributes($attributes)
     {
         $attributes_str = "";
         foreach ($attributes as $attr => $value) {
-            $attributes_str .= " " . $attr . "='" . $value . "'";
+            $attributes_str .= " $attr='$value'";
         }
         return $attributes_str;
     }

@@ -19,7 +19,7 @@ abstract class Content {
     public function render($vars = array()) {
         
         extract($vars);
-        require "../app/content/views/" . $this->cname6865943 . ".php";
+        require APP_DIR . "/content/views/" . $this->cname6865943 . ".php";
         
     }
     

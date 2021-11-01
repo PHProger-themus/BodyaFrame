@@ -17,7 +17,7 @@ class Logger implements LoggerInterface {
     private function processContext(&$message, array $context) {
         
         foreach ($context as $var => $value) {           
-            $message = str_replace('{' . $var . '}', $value, $message);            
+            $message = str_replace("{$var}", $value, $message);
         }
         
     }
@@ -29,12 +29,12 @@ class Logger implements LoggerInterface {
         $time = date('[D, F d, Y H:i:s]');
         $level = strtoupper($level);
            
-        $logMessage = $time . ' ' . $level . ': ' . $message . PHP_EOL;
-        $logMessageSystem = $level . ': ' . $message;
+        $logMessage = "$time $level: $message" . PHP_EOL;
+        $logMessageSystem = "$level: $message";
            
         if ($this->useSystem) error_log($logMessageSystem);
         else {
-            $logFileName = HOME_DIR . '/logs/' . $level . '.log';
+            $logFileName = HOME_DIR . "/logs/$level.log";
             $logFile = fopen($logFileName, 'a');
             fwrite($logFile, $logMessage);
             fclose($logFile);

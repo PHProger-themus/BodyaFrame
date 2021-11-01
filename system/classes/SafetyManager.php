@@ -7,8 +7,8 @@ class SafetyManager
 
     public static function generateRandomString(int $size = 10, bool $with_characters = false)
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        if ($with_characters) $characters .= '-_+=?|@#$%^&*()[]{}:';
+        $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if ($with_characters) $characters .= "-_+=?|@#$%^&*()[]{}:";
         $charactersLength = strlen($characters);
         $randomString = null;
         for ($i = 0; $i < $size; $i++) {

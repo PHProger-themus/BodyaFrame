@@ -5,8 +5,8 @@ namespace system\classes;
 class HighlightHelper
 {
 
-    public static function highlight(array $words, string $text, $pattern = null) {
-
+    public static function highlight(array $words, string $text, $pattern = null)
+    {
         if (is_null($pattern)) {
             $pattern = "<b class='highlight'>\\1</b>";
         }
@@ -15,7 +15,6 @@ class HighlightHelper
         $text = preg_replace('/(' . $words . ')/ui', $pattern, $text);
 
         return $text;
-
     }
 
 }

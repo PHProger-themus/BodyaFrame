@@ -46,7 +46,7 @@ abstract class DB extends Model
      */
     protected function connect(): void
     {
-        $dsn = 'mysql:host=' . $this->dbi->host . ';dbname=' . $this->dbi->database . ';charset=utf8';
+        $dsn = "mysql:host={$this->dbi->host};dbname={$this->dbi->database};charset=utf8";
         $this->db = new PDO($dsn, $this->dbi->username, $this->dbi->password);
     }
 

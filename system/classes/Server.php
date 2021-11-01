@@ -58,8 +58,7 @@ class Server {
     */
     public static function setSession(array $values) {
         foreach ($values as $key => $value) {
-            // TODO: Вынести htmlspecialchars с этим параметром в отдельный метод
-            $_SESSION[$key] = htmlspecialchars($value, ENT_QUOTES);
+            $_SESSION[$key] = SafetyManager::filterString($value);
         }
     }
     

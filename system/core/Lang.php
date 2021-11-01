@@ -22,13 +22,13 @@ abstract class Lang
         } else {
             $page_lang = require_once($path_to_lang_file);
         }
-        $wrapper_lang = require_once('../app/lang/' . Cfg::$get->lang . '/wrapper.php');
+        $wrapper_lang = require_once(APP_DIR . "/lang/" . Cfg::$get->lang . "/wrapper.php");
 		self::$lang = array_merge($page_lang, $wrapper_lang);
     }
 
     public static function get(string $key)
     {
-        return str_replace("\n", '<br><br>', self::$lang[$key]);
+        return str_replace("\n", "<br><br>", self::$lang[$key]);
     }
 
 }

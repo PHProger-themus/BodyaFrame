@@ -7,15 +7,19 @@ use system\classes\ArrayHolder;
 abstract class Controller
 {
 
-    protected $view;
-    private ArrayHolder $get;
-    private ArrayHolder $post;
+    protected View $view;
+    private ?ArrayHolder $get = null;
+    private ?ArrayHolder $post = null;
 
     public function __construct()
     {
         $this->view = new View();
-        $this->get = ArrayHolder::new($_GET);
-        $this->post = ArrayHolder::new($_POST);
+        if (!empty($_GET)) {
+            $this->get = ArrayHolder::new($_GET);
+        }
+        if (!empty($_POST)) {
+            $this->post = ArrayHolder::new($_POST);
+        }
     }
 
     /**

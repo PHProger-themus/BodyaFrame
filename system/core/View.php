@@ -1,13 +1,12 @@
 <?php
-//TODO: Заменить конкатенацию на строки с двойными кавычками
+
 namespace system\core;
 
 use system\classes\ArrayHolder;
 use system\classes\LinkBuilder;use system\classes\SafetyManager;
 use system\classes\Server;
-use system\interfaces\ViewInterface;
 
-class View implements ViewInterface
+class View
 {
 
     private $route;
@@ -35,7 +34,6 @@ class View implements ViewInterface
 
     public function render($vars = array()): void
     {
-        global $start, $memory;
         extract($this->filterData($vars));
 
         $page = Cfg::$get->route;
