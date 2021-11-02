@@ -3,29 +3,34 @@
 namespace system\classes;
 
 use phpDocumentor\Reflection\Types\Resource_;
+use system\core\SystemException;
 use system\interfaces\FilesHelperInterface;
+use function PHPUnit\Framework\directoryExists;
 
 class FilesHelper implements FilesHelperInterface
 {
 
     public static function count(string $path, string $mode = self::FILES): int
     {
-        $dir = opendir($path);
-        $count = 0;
-        $countMethod = 'count' . ucfirst($mode);
+        if (file_exists($path)) {
+            $dir = opendir($path);
+            $count = 0;
+            $countMethod = 'count' . $mode;
 
-        while ($file = readdir($dir)) {
-            if ($file != '.' && $file != '..') {
-                $filename = $path . DIRECTORY_SEPARATOR . $file;
-                if ($mode == self::ALL) {
-                    $count++;
-                } else {
-                    self::$countMethod($count, $filename);
+            while ($file = readdir($dir)) {
+                if ($file != '.' && $file != '..') {
+                    $filename = $path . DIRECTORY_SEPARATOR . $file;
+                    if ($mode == self::ALL) {
+                        $count++;
+                    } else {
+                        self::$countMethod($count, $filename);
+                    }
                 }
             }
+            return $count;
+        } else {
+            throw new SystemException("Заданной директории \"$path\" не существует");
         }
-
-        return $count;
     }
 
     private static function countFiles(int &$count, string $filename)
@@ -45,10 +50,10 @@ class FilesHelper implements FilesHelperInterface
     public static function countWordsInFile(string $path, string $word = self::ALL): int
     {
         $word = mb_strtolower($word);
-        $file = file_get_contents($path);
+        $file = mb_strtolower(file_get_contents($path));
 
         if ($word != self::ALL) {
-            $count = preg_match_all('/(' . $word . ')\b/ui', $file);
+            $count = preg_match_all("/ $word$| $word |^$word/ui", $file);
         } else {
             $count = preg_match_all('/[\w]+\b/ui', $file);
         }
