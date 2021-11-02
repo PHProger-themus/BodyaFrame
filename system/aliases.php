@@ -13,3 +13,4 @@
     class_alias("\system\core\Lang", "Lang");
     class_alias("\system\core\Errors", "Errors");
     class_alias("\system\core\Page", "Page");
+    class_alias("\system\core\PHP", "PHP");

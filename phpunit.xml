@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./vendor/autoload.php" colors="true" verbose="true" stopOnFailure="true">
+<phpunit bootstrap="./system/_init.php" colors="true" verbose="true" stopOnFailure="true">
     <testsuites>
         <testsuite name="unit">
             <directory>./tests</directory>
@@ -9,4 +9,7 @@
             <directory>./system/tests</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <const name="TESTING" value="1" />
+    </php>
 </phpunit>

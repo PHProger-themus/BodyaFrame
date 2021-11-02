@@ -2,11 +2,13 @@
 
 namespace system\tests\classes;
 
-use phpDocumentor\Reflection\File;
 use PHPUnit\Framework\TestCase;
 use system\classes\FilesHelper;
 use system\core\SystemException;
 
+/**
+ * @covers FilesHelper
+ */
 class FilesHelperTest extends TestCase
 {
 

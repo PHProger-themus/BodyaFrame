@@ -1,7 +1,5 @@
 <?php
 
-require_once('functions.php');
-
 return [
 
     //Установка опции в false переведет сайт в режим обслуживания, сделав его недоступным для пользователя
@@ -14,15 +12,15 @@ return [
     'routes' => require_once(APP_DIR . '/web/routes.php'),
     
     //Текущий URL страницы без GET-параметров
-    'url' => explode('?', $_SERVER['REQUEST_URI'], 2)[0],
+    'url' => explode('?', PHP::getServer('REQUEST_URI'), 2)[0],
 
     //С какого устройства была загружена страница ( mobile / desktop )
-    'device' => (preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"])) ? 'mobile' : 'desktop',
+    'device' => (preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", PHP::getServer('HTTP_USER_AGENT'))) ? 'mobile' : 'desktop',
 
     //Массив данных вебсайта
     'website' => [
         'prefix' => '', //Обязательное условие - слеш в начале, если не пусто
-        'root' => $_SERVER['DOCUMENT_ROOT'],
+        'root' => HOME_DIR,
         'img' => '/app/files/images',
     ],
 	

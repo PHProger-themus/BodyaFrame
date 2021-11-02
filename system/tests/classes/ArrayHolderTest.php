@@ -5,21 +5,18 @@ namespace system\tests\classes;
 use PHPUnit\Framework\TestCase;
 use system\classes\ArrayHolder;
 
+/**
+ * @covers ArrayHolder
+ */
 class ArrayHolderTest extends TestCase
 {
 
-    /**
-     * @covers ArrayHolder::new
-     */
     public function testEmptyArrayWasPassed()
     {
         $holder = ArrayHolder::new([]);
         $this->assertNull($holder);
     }
 
-    /**
-     * @covers ArrayHolder::new
-     */
     public function testArrayHolderWasCreated()
     {
         $array = ['int' => 1, 'double' => 2.7, 'string' => 'Hello World!'];
@@ -34,7 +31,6 @@ class ArrayHolderTest extends TestCase
 
     /**
      * @depends testArrayHolderWasCreated
-     * @covers ArrayHolder::old
      */
     public function testArrayWasCreatedFromArrayHolderInstance(ArrayHolder $holder)
     {

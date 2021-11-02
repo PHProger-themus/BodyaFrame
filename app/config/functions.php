@@ -27,6 +27,13 @@ function cmd(...$data)
     die();
 }
 
+function configInit()
+{
+    $config = require APP_DIR . '/config/config.php';
+    $common_config = require HOME_DIR . '/config.php';
+    Cfg::init($config, $common_config);
+}
+
 function displayErrors()
 {
     ini_set('display_errors', true);
