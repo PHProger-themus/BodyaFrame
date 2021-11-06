@@ -29,7 +29,6 @@ class FormHelper
 
         $enctype = str_contains(self::$form, "input type='file'") ? " enctype='multipart/form-data'" : '';
         $formCreated = "<form method='POST'$enctype><input type='hidden' name='_formName' value='$form_name' />" . self::$form . "</form>";
-        echo self::$CSRFToken . "\n";
         echo $formCreated;
         self::$form = '';
     }

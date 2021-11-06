@@ -7,7 +7,7 @@ class PHP
 
     private static $stubs = [
         'REMOTE_ADDR' => '127.0.0.1',
-        'REQUEST_URI' => 'https://example.com',
+        'REQUEST_URI' => '/ru/testing/page?id=1&name=BodyaFrame&token=jGilb5^hj4',
         'HTTP_USER_AGENT' => 'Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586)'
     ];
 
