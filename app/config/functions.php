@@ -29,9 +29,9 @@ function cmd(...$data)
 
 function configInit()
 {
-    $config = require APP_DIR . '/config/config.php';
+    $app_config = require APP_DIR . '/config/config.php';
     $common_config = require HOME_DIR . '/config.php';
-    Cfg::init($config, $common_config);
+    Cfg::init($app_config, $common_config);
 }
 
 function displayErrors()
@@ -40,12 +40,16 @@ function displayErrors()
     error_reporting(E_ALL);
 }
 
-function phpInit()
+function bodyaframeInit()
 {
     if (Cfg::$get->debug) {
         displayErrors();
     }
-    ini_set('session.cookie_httponly', 1);
+    if (Cfg::$get->useSessions) {
+        ini_set('session.cookie_httponly', 1);
+        session_name(Cfg::$get->safety['sessionCookieName'] ?: null);
+        session_start();
+    }
     set_error_handler(function ($errno, $errstr) {
         throw new Error($errstr);
     });

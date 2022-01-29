@@ -9,13 +9,10 @@ class System {
     public static function renderError($filename, $vars = [])
     {
         extract($vars);
-
         ob_start();
         require SYSTEM_DIR . "/content/$filename.php";
         $content = ob_get_clean();
-
         require SYSTEM_DIR . "/content/Wrapper.php";
-        
     }
 
     public static function renderBlock($filename, $vars = [], $return = false)

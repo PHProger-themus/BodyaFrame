@@ -19,6 +19,13 @@ class MainController extends Controller
             $usersModel = new Users();
             $this->view->render();
         }
+
+        if (!isset($_SESSION['h'])) {
+            $_SESSION['h'] = 123;
+        } else {
+            echo $_SESSION['h'];
+        }
+
     }
     public function getPageAction($params)
     {

@@ -22,7 +22,7 @@ return [
                 'trusted_tables' => ['table']
             ],
         ],
-        'useAttributes' => false,
+        'useAttributes' => false, // TODO: remove this opportunity as it's inconvenient
     ],
 
     //Используется ли мультиязычность
@@ -37,5 +37,8 @@ return [
     //"debug" - отображение специальных ошибок на уровне фреймворка (не создан controller, action и тд.). "db_debug" - вывод выполненных SQL-запросов на текущей странице и ошибок SQL
     'debug' => true,
     'db_debug' => true,
+
+    //Используются ли сессии на сайте
+    'useSessions' => true,
 
 ];

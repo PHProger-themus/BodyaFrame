@@ -2,10 +2,12 @@
 
 namespace system\classes;
 
+use Exception;
+
 class SafetyManager
 {
 
-    public static function generateRandomString(int $size = 10, bool $with_characters = false)
+    public static function generateRandomString(int $size = 10, bool $with_characters = false): ?string
     {
         $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         if ($with_characters) $characters .= "-_+=?|@#$%^&*()[]{}:";
@@ -17,7 +19,10 @@ class SafetyManager
         return $randomString;
     }
 
-    public static function generateByteString(int $size = 5)
+    /**
+     * @throws Exception
+     */
+    public static function generateByteString(int $size = 5): string
     {
         $bytes = random_bytes(5);
         return bin2hex($bytes);
@@ -48,7 +53,7 @@ class SafetyManager
         file_put_contents($path, $report, FILE_APPEND);
     }
 
-    public static function filterString(string $str)
+    public static function filterString(string $str): string
     {
         return htmlspecialchars($str, ENT_QUOTES);
     }

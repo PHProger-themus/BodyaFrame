@@ -30,13 +30,18 @@ class Router
         }
     }
 
+    private function defineLocale(string $url, string $lang)
+    {
+        Cfg::$get->lang = $lang;
+        return substr($url, strlen($lang) + 2);
+    }
+
     private function removeLocale(string $url)
     {
         if (Cfg::$get->multilang) {
-            $lang = explode('/', $url)[1];
-            if (isset(Cfg::$get->langs[$lang])) { //Если в конфиге нет нужной локали, мы не используем
-                Cfg::$get->lang = $lang;
-                return substr($url, strlen($lang) + 2);
+            $lang = (!empty($url) ? explode('/', $url)[1] : '');
+            if (isset(Cfg::$get->langs[$lang])) {
+                return $this->defineLocale($url, $lang);
             } else {
                 LinkBuilder::redirect($url, Cfg::$get->lang);
             }
@@ -44,15 +49,17 @@ class Router
         return trim($url, '/');
     }
 
+    private function getPrefix(string $config_prefix)
+    {
+        return (empty($config_prefix) || str_starts_with($config_prefix, '/') ? $config_prefix : "/$config_prefix");
+    }
+
     private function removePrefix(string $url)
     {
-        $prefix = Cfg::$get->website['prefix'];
+        $prefix = $this->getPrefix(Cfg::$get->website['prefix']);
         if (!empty($prefix)) {
             if (str_starts_with($url, $prefix)) {
                 $url = substr(Cfg::$get->url, strlen($prefix));
-                if (empty($url)) {
-                    $url = "/";
-                }
             } else {
                 Errors::code(404);
             }

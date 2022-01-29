@@ -67,7 +67,7 @@ class LinkBuilder
     {
         $lang = (!empty($lang) ? $lang : Cfg::$get->lang) . (!empty($url) ? '/' : '');
         $url = trim($url, '/');
-        return Cfg::$get->website['prefix'] . '/' . $lang . $url;
+        return '/' . Cfg::$get->website['prefix'] . '/' . $lang . $url;
     }
 
     public static function redirect(string $url, string $lang = '')
